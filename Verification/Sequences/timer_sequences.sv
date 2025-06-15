@@ -171,7 +171,7 @@ class timer_counter_sequence extends timer_base_sequence;
     `uvm_info(get_type_name(), "Starting Timer Counter Sequence", UVM_LOW)
     
     // Test Counter0 boundaries (2-150)
-    bit [7:0] counter0_values[5] = '{2, 5, 50, 100, 150};
+    logic [7:0] counter0_values[5] = '{8'd2, 8'd5, 8'd50, 8'd100, 8'd150};
     
     foreach(counter0_values[i]) begin
       `uvm_info(get_type_name(), $sformatf("Testing Counter0 with value %0d", counter0_values[i]), UVM_LOW)
@@ -192,7 +192,7 @@ class timer_counter_sequence extends timer_base_sequence;
     end
     
     // Test Counter1 boundaries (50-200)
-    bit [7:0] counter1_values[5] = '{50, 75, 100, 150, 200};
+    logic [7:0] counter1_values[5] = '{8'd50, 8'd75, 8'd100, 8'd150, 8'd200};
     
     foreach(counter1_values[i]) begin
       `uvm_info(get_type_name(), $sformatf("Testing Counter1 with value %0d", counter1_values[i]), UVM_LOW)
