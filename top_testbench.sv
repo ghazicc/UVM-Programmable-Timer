@@ -11,7 +11,7 @@ import uvm_pkg::*;
 `include "Verification/sequencer.sv"
 `include "Verification/driver.sv"
 `include "Verification/monitor.sv"
-`include "Verification/scoreboard_timer.sv"
+`include "Verification/scoreboard.sv"
 `include "Verification/agent.sv"
 `include "Verification/environment.sv"
 `include "Verification/base_test.sv"
