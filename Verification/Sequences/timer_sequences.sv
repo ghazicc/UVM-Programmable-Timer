@@ -171,7 +171,7 @@ class timer_counter_sequence extends timer_base_sequence;
     `uvm_info(get_type_name(), "Starting Timer Counter Sequence", UVM_LOW)
     
     // Test Counter0 boundaries (2-150)
-    int counter0_values[] = {2, 5, 50, 100, 150};
+    int counter0_values[5] = '{2, 5, 50, 100, 150};
     
     foreach(counter0_values[i]) begin
       `uvm_info(get_type_name(), $sformatf("Testing Counter0 with value %0d", counter0_values[i]), UVM_LOW)
@@ -192,7 +192,7 @@ class timer_counter_sequence extends timer_base_sequence;
     end
     
     // Test Counter1 boundaries (50-200)
-    int counter1_values[] = {50, 75, 100, 150, 200};
+    int counter1_values[5] = '{50, 75, 100, 150, 200};
     
     foreach(counter1_values[i]) begin
       `uvm_info(get_type_name(), $sformatf("Testing Counter1 with value %0d", counter1_values[i]), UVM_LOW)
@@ -351,22 +351,22 @@ endclass
   
 endclass
 
-// Timer Counter Sequence - Tests counter range limits
-class timer_counter_sequence extends timer_base_sequence;
+// Timer Counter Range Sequence - Tests counter range limits  
+class timer_counter_range_sequence extends timer_base_sequence;
   
-  `uvm_object_utils(timer_counter_sequence)
+  `uvm_object_utils(timer_counter_range_sequence)
   
-  function new(string name = "timer_counter_sequence");
+  function new(string name = "timer_counter_range_sequence");
     super.new(name);
   endfunction
   
   task body();
     timer_sequence_item req;
     
-    `uvm_info(get_type_name(), "Starting Timer Counter Sequence", UVM_LOW)
+    `uvm_info(get_type_name(), "Starting Timer Counter Range Sequence", UVM_LOW)
     
     // Test Counter0 boundaries (2-150)
-    int counter0_values[] = {2, 5, 50, 100, 150};
+    int counter0_values[5] = '{2, 5, 50, 100, 150};
     
     foreach(counter0_values[i]) begin
       // Set control for counter0, mode 0
@@ -444,7 +444,7 @@ class timer_gate_sequence extends timer_base_sequence;
     finish_item(req);
     
     // Test gate control patterns
-    bit gate_patterns[8] = {1,1,0,0,1,0,1,1};
+    bit gate_patterns[8] = '{1,1,0,0,1,0,1,1};
     
     foreach(gate_patterns[i]) begin
       req = timer_sequence_item::type_id::create("req");
