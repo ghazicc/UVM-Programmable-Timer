@@ -76,8 +76,8 @@ module timer(d, a, clk, g0, g1, out0, out1);
             
             2'b01: begin // Cycle 2: Check address validity and store MSN
                 counter_select <= temp_control[3];
-                // Check if address matches: a[1] must match temp_control[3], a[0] must be 0
-                if ((a[1] == temp_control[3]) && (a[0] == 1'b0)) begin
+                // Check if address matches: a[0] must match temp_control[3], a[1] must be 0
+                if ((a[0] == temp_control[3]) && (a[1] == 1'b0)) begin
                     temp_msn <= d; // Store most significant nibble
                     valid_sequence <= 1'b1;
                     cycle_state <= 2'b10;
