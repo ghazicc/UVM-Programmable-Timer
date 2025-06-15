@@ -158,20 +158,21 @@ endclass
 
 // Timer Counter Sequence - Tests counter range boundaries
 class timer_counter_sequence extends timer_base_sequence;
+    logic [7:0] counter0_values[0:4];
+    logic [7:0] counter1_values[0:4];
   
   `uvm_object_utils(timer_counter_sequence)
   
   function new(string name = "timer_counter_sequence");
     super.new(name);
+    counter0_values = '{8'h02, 8'h05, 8'h32, 8'h64, 8'h96}; // 2, 5, 50, 100, 150
+    counter1_values = '{8'h32, 8'h4B, 8'h64, 8'h96, 8'hC8}; // 50, 75, 100, 150, 200
   endfunction
   
   task body();
     timer_sequence_item req;
     
     `uvm_info(get_type_name(), "Starting Timer Counter Sequence", UVM_LOW)
-    
-    // Test Counter0 boundaries (2-150)
-    integer counter0_values[5] = '{2, 5, 50, 100, 150};
     
     foreach(counter0_values[i]) begin
       `uvm_info(get_type_name(), $sformatf("Testing Counter0 with value %0d", counter0_values[i]), UVM_LOW)
@@ -191,8 +192,6 @@ class timer_counter_sequence extends timer_base_sequence;
       end
     end
     
-    // Test Counter1 boundaries (50-200)
-    integer counter1_values[5] = '{50, 75, 100, 150, 200};
     
     foreach(counter1_values[i]) begin
       `uvm_info(get_type_name(), $sformatf("Testing Counter1 with value %0d", counter1_values[i]), UVM_LOW)
