@@ -171,7 +171,7 @@ class timer_counter_sequence extends timer_base_sequence;
     `uvm_info(get_type_name(), "Starting Timer Counter Sequence", UVM_LOW)
     
     // Test Counter0 boundaries (2-150)
-    int counter0_values[5] = '{2, 5, 50, 100, 150};
+    bit [7:0] counter0_values[5] = '{2, 5, 50, 100, 150};
     
     foreach(counter0_values[i]) begin
       `uvm_info(get_type_name(), $sformatf("Testing Counter0 with value %0d", counter0_values[i]), UVM_LOW)
@@ -192,7 +192,7 @@ class timer_counter_sequence extends timer_base_sequence;
     end
     
     // Test Counter1 boundaries (50-200)
-    int counter1_values[5] = '{50, 75, 100, 150, 200};
+    bit [7:0] counter1_values[5] = '{50, 75, 100, 150, 200};
     
     foreach(counter1_values[i]) begin
       `uvm_info(get_type_name(), $sformatf("Testing Counter1 with value %0d", counter1_values[i]), UVM_LOW)
@@ -366,7 +366,7 @@ class timer_counter_range_sequence extends timer_base_sequence;
     `uvm_info(get_type_name(), "Starting Timer Counter Range Sequence", UVM_LOW)
     
     // Test Counter0 boundaries (2-150)
-    int counter0_values[5] = '{2, 5, 50, 100, 150};
+    bit [7:0] counter0_values[5] = '{2, 5, 50, 100, 150};
     
     foreach(counter0_values[i]) begin
       // Set control for counter0, mode 0
