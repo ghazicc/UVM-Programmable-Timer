@@ -1,0 +1,61 @@
+Specs 
+
+the design is clock driver have the following inputs
+
+d 4 bits(DATA) 
+a 2 bits (ADDRESS)
+g0 1 bit 
+g1 1 bit 
+clk 
+ 
+Outputs :
+out0 
+out1 
+
+Internal registers:
+counter0 8 bits
+counter1 8 bits 
+control 8 bits
+ 
+g0 activate counter0 and out0 observe the output depending on counter0 and the control
+g1 activate counter1 and out1 observe the output depending on counter1 and the control
+
+Functionality: The main functionality of the timer is to divide the main clock by a specific count, and the counter works in a specific mode (both count and mode will be programmable).
+
+The count value is internally stored inside the counter register. 
+
+Working modes: 
+
+Mode 0: the output frequency & duty cycle will be 1/n (n-1 pulses low, and 1 high pulse). 
+
+Mode 1: the output frequency & duty cycle will be n-1/n (1 low pulse, and n-1 high pulses). 
+
+Mode 2: the output frequency & duty cycle will be ½ (n/2 pulses low and n/2 pulses high). In this mode, the count value must be an even number.
+
+Mode 3: the output frequency & duty cycle will be n+1/2 low pulses and n-1/2 high pulses. In this mode the count n must be and odd number. 
+
+Mode 4: the output frequency & duty cycle will be n-1/2 low pulses and n+1/2 high pulses. In this mode the count n must be and odd number. 
+
+The control word will be an 8-bit to be sent to address 10b in the following format x,x,x,x,c,m2,m1,m0 x: don’t care c: to determine the counter. m2,m1,m0 to specify the mode
+
+Then the count value to be sent to address 0 for counter 0, and to address 1 for counter 1. 
+
+If g = 1 then the counter counts, else, it freezes till g returns to 1. 
+
+
+Notes: 
+Counter 1 can divide the frequency between 50 and 200, while counter 1 between 2 and 150.
+
+Name the module as “timer” with the following names and order of its ports module timer(d,a,clk,g0,g1,out0,out1)
+
+Address 00 write on counter0
+Address 01 write on counter1
+Address 10 write on control
+
+the mode changes in 3 clock cycles by control change by valid mode (all done on buffers to handle the invalid write)
+1st cycle: control write 
+2nd cycle: 
+a. 1st bit of address bus must match 4th bit of control register, and the second bit of the address must be 0
+b. if a is valid, then: data bus is stored on counter register that matches the address (most significant nibble)
+3rd cycle: if 2nd cycle a) valid, least significant nibble is loaded from the data bus, check if it matches the values criteria depending on mode (even/odd) and which counter 
+else: keep current operation, and flush the buffers
