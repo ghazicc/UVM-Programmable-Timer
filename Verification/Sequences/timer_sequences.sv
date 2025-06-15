@@ -250,11 +250,13 @@ endclass
 
 // Timer Gate Sequence - Tests gate control functionality
 class timer_gate_sequence extends timer_base_sequence;
+    bit gate_patterns[0:15];
   
   `uvm_object_utils(timer_gate_sequence)
   
   function new(string name = "timer_gate_sequence");
     super.new(name);
+    gate_patterns  = '{1,1,1,0,0,0,1,1,0,1,0,1,1,0,0,1};
   endfunction
   
   task body();
@@ -265,8 +267,6 @@ class timer_gate_sequence extends timer_base_sequence;
     // Setup counter0 with a known configuration
     write_timer_counter(1'b0, 3'b000, 8'd8);
     
-    // Test gate control patterns
-    bit gate_patterns[16] = '{1,1,1,0,0,0,1,1,0,1,0,1,1,0,0,1};
     
     foreach(gate_patterns[i]) begin
       req = timer_sequence_item::type_id::create("req");
