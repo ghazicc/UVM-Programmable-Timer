@@ -53,7 +53,7 @@ module top;
 
   // Maximum simulation time
   initial begin
-    #1ms;  // Maximum simulation time
+    #100;  // Maximum simulation time
     `uvm_fatal("TB_TOP", "Simulation timeout!")
   end
 
