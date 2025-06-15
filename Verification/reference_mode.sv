@@ -28,31 +28,42 @@ class timer_reference_model;
     bit [3:0] temp_msn;        // Temporary MSN storage
     bit       valid_sequence;  // Valid sequence flag
     bit       counter_select;  // Which counter to update
+  
+    bit start = 0;
     
     // Expected outputs
     bit out0_expected;
     bit out1_expected;
     
+    // File logging
+    integer log_file;
+    string log_file_name = "timer_reference.log";
+    
     // Constructor
     function new();
         reset();
+        log_file = $fopen(log_file_name, "w");
+        if (log_file == 0) begin
+            $display("Error: Could not open log file %s", log_file_name);
+        end
     endfunction
     
     // Reset function
     function void reset();
-        counter0 = 8'd2;        // Default minimum for counter0
-        counter1 = 8'd50;       // Default minimum for counter1
+        counter0 = 8'd0;        // Default minimum for counter0
+        counter1 = 8'd0;       // Default minimum for counter1
         control = 8'h00;
-        counter0_count = 8'd2;
-        counter1_count = 8'd50;
-        counter0_max = 8'd2;
-        counter1_max = 8'd50;
+        counter0_count = 8'd0;
+        counter1_count = 8'd0;
+        counter0_max = 8'd0;
+        counter1_max = 8'd0;
         counter0_mode = 3'b000;
         counter1_mode = 3'b000;
         cycle_state = 2'b00;
         valid_sequence = 1'b0;
         out0_expected = 1'b0;
         out1_expected = 1'b0;
+        start = 0;
     endfunction
     
     // Process register write (mimics DUT's 3-cycle process)
@@ -68,8 +79,8 @@ class timer_reference_model;
             
             2'b01: begin // Cycle 2: Check address validity and store MSN
                 counter_select = temp_control[3];
-                // Check if address matches: addr[0] must match temp_control[3], addr[1] must be 0
-                if ((addr[0] == temp_control[3]) && (addr[1] == 1'b0)) begin
+                // Check if address matches: addr[1] must match temp_control[3], addr[0] must be 0
+                if ((addr[1] == temp_control[3]) && (addr[0] == 1'b0)) begin
                     temp_msn = data; // Store most significant nibble
                     valid_sequence = 1'b1;
                     cycle_state = 2'b10;
@@ -219,6 +230,24 @@ class timer_reference_model;
     
     // Debug function to print internal state
     function void print_state();
+        if (log_file != 0) begin
+            $fdisplay(log_file, "@%0t: out0 = %0b, out1 = %0b", $time, out0_expected, out1_expected);
+            $fdisplay(log_file, "Reference Model State:");
+            $fdisplay(log_file, "  Cycle State: %0d", cycle_state);
+            $fdisplay(log_file, "  Counter0: count=%0d, max=%0d, mode=%0d", 
+                     counter0_count, counter0_max, counter0_mode);
+            $fdisplay(log_file, "  Counter1: count=%0d, max=%0d, mode=%0d", 
+                     counter1_count, counter1_max, counter1_mode);
+            $fdisplay(log_file, "  Control: 0x%02h", control);
+            $fdisplay(log_file, "  Expected outputs: out0=%0b, out1=%0b", out0_expected, out1_expected);
+            if (cycle_state != 2'b00) begin
+                $fdisplay(log_file, "  Update in progress: temp_control=0x%02h, temp_msn=0x%01h, valid=%0b", 
+                         temp_control, temp_msn, valid_sequence);
+            end
+            $fdisplay(log_file, "");
+        end
+        // Also print to console for immediate debugging
+        $display("@%0t: out0 = %0b, out1 = %0b", $time, out0_expected, out1_expected);
         $display("Reference Model State:");
         $display("  Cycle State: %0d", cycle_state);
         $display("  Counter0: count=%0d, max=%0d, mode=%0d", 
@@ -231,7 +260,15 @@ class timer_reference_model;
             $display("  Update in progress: temp_control=0x%02h, temp_msn=0x%01h, valid=%0b", 
                      temp_control, temp_msn, valid_sequence);
         end
+        $display("");
+    endfunction
+    
+    // Cleanup function to close the log file
+    function void finish();
+        if (log_file != 0) begin
+            $fclose(log_file);
+            log_file = 0;
+        end
     endfunction
 
 endclass
-                    

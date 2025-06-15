@@ -36,7 +36,7 @@ endfunction : connect_phase
     super.run_phase(phase);
     forever begin
         item = timer_sequence_item::type_id::create("item");
-        @(posedge vif.clk);
+      @(posedge vif.clk);
 
         // Capture inputs
         item.d = vif.d;

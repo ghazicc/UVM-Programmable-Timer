@@ -50,14 +50,13 @@ timer_sequence_item item;
   
     `uvm_info(get_type_name(), $sformatf("Driver: Sending data to DUT\n %s", item.sprint()),UVM_NONE)
     
-    @(posedge vif.clk);
+    @(negedge vif.clk);
     vif.d <= item.d;
     vif.a <= item.a;
     vif.g0 <= item.g0;
     vif.g1 <= item.g1;
 
-    // Hold for one clock cycle
-    @(posedge vif.clk);
+  
 
   endtask : drive
 

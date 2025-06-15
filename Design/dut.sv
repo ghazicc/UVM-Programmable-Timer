@@ -17,6 +17,8 @@ module timer(d, a, clk, g0, g1, out0, out1);
     input        g1;       // Gate for counter1
     output       out0;     // Output for counter0
     output       out1;     // Output for counter1
+  
+  	reg start;
 
     // Internal registers
     reg [7:0] counter0;    // Counter0 register (range: 2-150)
@@ -48,19 +50,21 @@ module timer(d, a, clk, g0, g1, out0, out1);
     
     // Initialize
     initial begin
-        counter0 = 8'd2;        // Default minimum for counter0
-        counter1 = 8'd50;       // Default minimum for counter1
-        control = 8'h00;
-        counter0_count = 8'd2;
-        counter1_count = 8'd50;
+        counter0 = 8'd0;        // Default minimum for counter0
+        counter1 = 8'd0;       // Default minimum for counter1
+        control = 8'bxxxxxxxx;
+        counter0_count = 8'd0;
+        counter1_count = 8'd00;
         cycle_state = 2'b00;
         valid_sequence = 1'b0;
-        counter0_max = 8'd2;
-        counter1_max = 8'd50;
+        counter0_max = 8'd0;
+        counter1_max = 8'd0;
         counter0_mode = 3'b000;
         counter1_mode = 3'b000;
         out0_reg = 1'b0;
         out1_reg = 1'b0;
+      	start = 0;
+      	#20 start = 1;
     end
     
     // 3-cycle control update process
@@ -68,16 +72,18 @@ module timer(d, a, clk, g0, g1, out0, out1);
         case (cycle_state)
             2'b00: begin // Idle state
                 if (a == 2'b10) begin // Control register write
-                    temp_control <= {4'b0000, d}; // Store control data
+                    temp_control = {4'b0000, d}; // Store control data
                     cycle_state <= 2'b01;
                     valid_sequence <= 1'b0;
+                end else if(a == 2'b11) begin
+                  	cycle_state <= 2'b00;
                 end
             end
             
             2'b01: begin // Cycle 2: Check address validity and store MSN
                 counter_select <= temp_control[3];
-                // Check if address matches: a[0] must match temp_control[3], a[1] must be 0
-                if ((a[0] == temp_control[3]) && (a[1] == 1'b0)) begin
+                // Check if address matches: a[1] must match temp_control[3], a[0] must be 0
+              if ((a[0] == temp_control[3]) && (a[1] == 1'b0)) begin
                     temp_msn <= d; // Store most significant nibble
                     valid_sequence <= 1'b1;
                     cycle_state <= 2'b10;
@@ -209,7 +215,7 @@ module timer(d, a, clk, g0, g1, out0, out1);
     end
     
     // Output assignments
-    assign out0 = out0_reg && g0; // Output only when gate is enabled
-    assign out1 = out1_reg && g1; // Output only when gate is enabled
+  assign out0 = out0_reg && g0 && start; // Output only when gate is enabled
+  assign out1 = out1_reg && g1 && start; // Output only when gate is enabled
 
 endmodule

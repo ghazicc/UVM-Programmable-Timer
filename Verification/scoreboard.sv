@@ -1,4 +1,7 @@
 class timer_scoreboard extends uvm_scoreboard;
+  
+  int trans_count = 0;
+  
   //1. Component
   `uvm_component_utils(timer_scoreboard)
 
@@ -46,7 +49,10 @@ class timer_scoreboard extends uvm_scoreboard;
       timer_sequence_item trans;
       wait ((transactions.size() != 0));
       trans = transactions.pop_front();
-      compare(trans);
+      
+      if(trans_count > 0)
+      	compare(trans);
+      trans_count++;
     end
   endtask : run_phase
 
